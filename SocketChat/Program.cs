@@ -20,7 +20,6 @@ Console.CancelKeyPress += (_, e) =>
 
 try
 {
-    
     if(args.Length < 2)
     {
         PrintTutorial();

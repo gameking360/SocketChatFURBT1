@@ -68,7 +68,6 @@ namespace SocketChat
 
                 try
                 {
-                    Console.WriteLine(sender.RemoteEndPoint);
 
                     //var conexao = ChatSession.GetConnection(name);
                     Console.WriteLine($"Conectando em {this.Host}:{name}");

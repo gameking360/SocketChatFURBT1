@@ -35,11 +35,8 @@ namespace SocketChat
 
                 var list = Task.Run(async () =>
                 {
-                    var connectedClient = await conexao.Listener.AcceptAsync(ct);
-                    //  Console.WriteLine()
-                    // await conexao.ConnectAsync(ct, [((IPEndPoint)connectedClient.RemoteEndPoint).Port.ToString()]);
-                    Console.WriteLine(connectedClient.RemoteEndPoint);
-                    conexao.Senders.Add(connectedClient);
+                        var connectedClient = await conexao.Listener.AcceptAsync(ct);
+                        conexao.Senders.Add(connectedClient);
                     _ =  ReceiveLoopAsync(connectedClient, ct);
 
                 });
@@ -78,22 +75,6 @@ namespace SocketChat
 
                     string message = Encoding.UTF8.GetString(frame);
 
-                    //try
-                    //{
-                    //    var conexao = JsonSerializer.Deserialize<Conexao[]>(message);
-                    //    if(conexao != null)
-                    //    {
-                    //        for(int i = 0; i < conexao.Length; i++)
-                    //        {
-                    //            if (conexao[i].Porta == )
-                    //        }
-                    //    }
-                    //}
-                    //catch (Exception ex)
-                    //{
-
-                    //}
-
 
                     Console.WriteLine(Encoding.UTF8.GetString(frame));
                 }
@@ -121,7 +102,6 @@ namespace SocketChat
                         continue;
 
                     var payload = Encoding.UTF8.GetBytes($"{name}: {line}");
-                    Console.WriteLine(conexao.Senders.Count);
                     foreach(var sender in conexao.Senders)
                     await Frames.WriteAsync(sender, payload, session);
                 }

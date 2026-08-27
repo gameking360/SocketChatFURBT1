@@ -10,6 +10,7 @@ namespace SocketChat
 
         public static async Task WriteAsync(Socket socket, ReadOnlyMemory<byte> payload, CancellationToken ct = default)
         {
+
             if (payload.Length > MaxFrameSize)
                 throw new ArgumentException($"Payload of {payload.Length} bytes exceeds the limit.");
 
