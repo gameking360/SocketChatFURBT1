@@ -9,18 +9,24 @@ public sealed class PeerOptions
           SocketChat <porta> <apelido> [par ...]
           SocketChat --config <arquivo>
 
-        Um par pode ser "host:porta" ou apenas "porta" (assume 127.0.0.1).
+        A porta de escuta e os pares aceitam "host:porta" ou apenas "porta"
+        (assume 127.0.0.1). Em rede, informe na porta de escuta o IP desta
+        máquina, que é o endereço anunciado aos demais.
 
         Exemplos:
           SocketChat 9001 alice
           SocketChat 9002 bob 9001 127.0.0.1:9003
+          SocketChat 192.168.0.10:9001 alice
+          SocketChat 192.168.0.20:9002 bob 192.168.0.10:9001
           SocketChat --config exemplos/alice.conf
 
         Arquivo de configuração:
-          porta=9001
+          porta=192.168.0.10:9001
           apelido=alice
-          pares=127.0.0.1:9002,127.0.0.1:9003
+          pares=192.168.0.20:9002,192.168.0.30:9003
         """;
+
+    public required string ListenHost { get; init; }
 
     public required int ListenPort { get; init; }
 
@@ -60,17 +66,19 @@ public sealed class PeerOptions
         return Create(Setting(settings, "porta"), Setting(settings, "apelido"), Setting(settings, "pares"));
     }
 
-    private static PeerOptions Create(string port, string nickname, string peers)
+    private static PeerOptions Create(string listen, string nickname, string peers)
     {
-        if (!int.TryParse(port, out var listenPort) || listenPort is < 1 or > 65535)
-            throw new FormatException($"porta de escuta inválida: '{port}'.");
+        // O host informado aqui é o endereço que este nó anuncia aos demais.
+        if (!PeerEndpoint.TryParse(listen, out var endpoint))
+            throw new FormatException($"porta de escuta inválida: '{listen}'.");
 
         if (string.IsNullOrWhiteSpace(nickname) || nickname.Any(char.IsWhiteSpace))
             throw new FormatException("o apelido é obrigatório e não pode conter espaços.");
 
         return new PeerOptions
         {
-            ListenPort = listenPort,
+            ListenHost = endpoint.Host,
+            ListenPort = endpoint.Port,
             Nickname = nickname,
             KnownPeers = ParsePeers(peers)
         };

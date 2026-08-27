@@ -24,7 +24,7 @@ public sealed class PeerNode : IPeerEventListener
         _options = options;
         _output = output;
         _registry = new PeerRegistry(options.Nickname);
-        Endpoint = new PeerEndpoint("127.0.0.1", options.ListenPort);
+        Endpoint = new PeerEndpoint(options.ListenHost, options.ListenPort);
     }
 
     public string Nickname => _options.Nickname;
