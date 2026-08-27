@@ -30,13 +30,13 @@ removido da lista de participantes.
 Justificativa
 
 Enfileirar sem limite nao trava o remetente, mas faz a memoria crescer sem controle por causa de um
-par que talvez nunca volte a ler. Isso apenas adia o problema em vez de resolver.
+par que talvez nunca volte a ler.
 
 Desconectar no primeiro sinal de lentidao e agressivo demais. Uma lentidao momentanea, como o
 usuario segurando a rolagem do terminal, derrubaria um participante saudavel.
 
 Descartar a mensagem mais antiga preservaria o texto recente, mas entregaria a conversa fora de
-ordem. Em um chat e preferivel perder o que nao coube do que exibir historico embaralhado.
+ordem.
 
 Por isso a politica tem dois niveis: descarte com limite para lentidao passageira, e desconexao por
 prazo para o par que travou de vez. O descarte e sempre local ao par lento, os demais continuam
