@@ -1,11 +1,19 @@
-﻿
-
 using System.Net.Sockets;
-using SocketChat;
+using SocketChat.Configuration;
+using SocketChat.Peer;
+using SocketChat.Ui;
 
-if (args.Length == 0)
+var output = new ConsoleOutput();
+
+PeerOptions options;
+try
 {
-    PrintTutorial();
+    options = PeerOptions.Parse(args);
+}
+catch (FormatException ex)
+{
+    output.Warning(ex.Message);
+    output.Info(PeerOptions.Usage);
     return 1;
 }
 
@@ -16,45 +24,21 @@ Console.CancelKeyPress += (_, e) =>
     cts.Cancel();
 };
 
-
-
+var node = new PeerNode(options, output);
 try
 {
-    if(args.Length < 2)
-    {
-        PrintTutorial();
-        return 1;
-    }
-    int    porta = ReadInt(args, 0, 9000);
-    string apelido = ReadText(args, 1, "conexao");
-    string[] names = args.Skip(2).ToArray();
-    
-    Connection conexao = new Connection(apelido, porta , "127.0.0.1");
-    await conexao.CreateConnection(cts.Token, names) ;
-
-    await ChatSession.RunAsync(conexao, apelido, cts.Token) ;
-    return 0;
-
-}catch(OperationCanceledException ex)
-{
-    Console.WriteLine(ex.Message);
-    return 0;
+    node.Start(cts.Token);
+    await new ChatCommands(node, output).RunAsync(cts.Token);
 }
 catch (SocketException ex)
 {
-    Console.Error.WriteLine($"Socket error: {ex.SocketErrorCode} - {ex.Message}");
+    output.Warning($"erro de socket: {ex.SocketErrorCode} - {ex.Message}");
     return 1;
 }
+finally
+{
+    await node.StopAsync();
+    output.System("sessão encerrada");
+}
 
-
-
-
-
-static int ReadInt(string[] args, int index, int fallback) =>
-    args.Length > index && int.TryParse(args[index], out var value) ? value : fallback;
-
-static string ReadText(string[] args, int index, string fallback) =>
-    args.Length > index && !string.IsNullOrWhiteSpace(args[index]) ? args[index] : fallback;
-
-
-static void PrintTutorial() => Console.WriteLine("Tutoral");
+return 0;
