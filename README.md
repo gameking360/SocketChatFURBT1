@@ -1,4 +1,5 @@
 SocketChat P2P - Trabalho Pratico 01 - Sistemas Distribuidos - FURB
+Grupo: Gabriel Labes, Pedro Valle Mafessolli, Vinícius Mannerich Dalmonico, João Pedro Erhardt
 
 Chat entre N participantes em malha completa, sem servidor central, usando apenas a classe Socket
 sobre TCP.
